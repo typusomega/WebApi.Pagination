@@ -188,10 +188,11 @@ namespace WebApi.Pagination
         /// <param name="firstIndex">The index of the first element in <paramref name="elements"/>.</param>
         /// <param name="totalLength">The total length of the original data source that was paginated.</param>
         /// <param name="unit">The value used for <see cref="RangeHeaderValue.Unit"/>.</param>
-        private static HttpResponseMessage BuildResponsePagination<T>(HttpRequestMessage request,
-            IReadOnlyCollection<T> elements, long firstIndex, long totalLength, string unit)
+        public static HttpResponseMessage BuildResponsePagination<T>(HttpRequestMessage request,
+            IEnumerable<T> elements, long firstIndex, long totalLength, string unit)
         {
-            if (elements.Count == 0)
+            var elementsCount = elements.Count();
+            if (elementsCount == 0)
             {
                 return request.CreateErrorResponse(HttpStatusCode.RequestedRangeNotSatisfiable,
                     "No elements in requested range.");
@@ -200,7 +201,8 @@ namespace WebApi.Pagination
             var response = request.CreateResponse(HttpStatusCode.PartialContent, elements);
             response.Headers.AcceptRanges.Add(unit);
             response.Content.Headers.ContentRange = new ContentRangeHeaderValue(
-                firstIndex, firstIndex + elements.Count - 1, totalLength) {Unit = unit};
+                firstIndex, firstIndex + elementsCount - 1, totalLength)
+            { Unit = unit };
             return response;
         }
 

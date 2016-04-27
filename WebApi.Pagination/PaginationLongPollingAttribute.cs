@@ -30,8 +30,7 @@ namespace WebApi.Pagination
         protected override Task<HttpResponseMessage> BuildResponseMessageAsync<T>(HttpRequestMessage request,
             IQueryable<T> source, CancellationToken cancellationToken)
         {
-            return request.CreateResponsePaginationLongPollingAsync(source, MaxAttempts, DelayMs, Unit, null,
-                cancellationToken);
+            return request.CreateResponsePaginationLongPollingAsync(source, MaxAttempts, DelayMs, Unit, cancellationToken);
         }
     }
 }
